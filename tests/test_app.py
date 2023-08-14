@@ -29,6 +29,27 @@ def test_create_user(client):
     }
 
 
+def test_create_user_already_created(client):
+    response = client.post(
+        '/users',
+        json={
+            'username': 'alice',
+            'email': 'alice@example.com',
+            'password': 'secret',
+        },
+    )
+    response = client.post(
+        '/users',
+        json={
+            'username': 'alice',
+            'email': 'alice@example.com',
+            'password': 'secret',
+        },
+    )
+    assert response.status_code == 400
+    assert response.json() == {'detail': 'Username already registered'}
+
+
 def test_read_users():
     response = client.get('/users')
     assert response.status_code == 200
